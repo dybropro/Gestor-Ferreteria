@@ -1,0 +1,13 @@
+build/
+dist/
+__pycache__/
+*.pyc
+*.spec
+*.db
+*.ico
+*.png
+.gemini/
+.idea/
+.vscode/
+venv/
+env/
