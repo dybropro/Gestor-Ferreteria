@@ -4,6 +4,7 @@ import licensing
 import database
 import sys
 import os
+import utils
 
 class LicenciaWindow:
     def __init__(self, root, on_success):
