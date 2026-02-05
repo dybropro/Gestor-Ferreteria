@@ -136,6 +136,6 @@ class InventarioWindow:
     def filtrar_bajo_stock(self):
         self.cargar_datos(solo_bajo=True)
 
-def abrir_ventana_inventario():
-    t = tk.Toplevel()
+def abrir_ventana_inventario(parent=None):
+    t = tk.Toplevel(parent)
     app = InventarioWindow(t)

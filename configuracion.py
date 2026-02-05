@@ -165,6 +165,6 @@ class ConfigWindow:
         finally:
             conn.close()
 
-def abrir_ventana():
-    win = tk.Toplevel()
+def abrir_ventana(parent=None):
+    win = tk.Toplevel(parent)
     app = ConfigWindow(win)

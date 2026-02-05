@@ -258,6 +258,6 @@ class ClientesWindow:
             
         self.lbl_segmento.config(text=segmento, background=color)
 
-def abrir_ventana_clientes():
-    t = tk.Toplevel()
+def abrir_ventana_clientes(parent=None):
+    t = tk.Toplevel(parent)
     ClientesWindow(t)

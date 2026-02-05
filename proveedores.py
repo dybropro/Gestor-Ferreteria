@@ -137,6 +137,6 @@ class ProveedoresWindow:
             self.limpiar()
             self.cargar_datos()
 
-def abrir_ventana_proveedores():
-    win = tk.Toplevel()
+def abrir_ventana_proveedores(parent=None):
+    win = tk.Toplevel(parent)
     app = ProveedoresWindow(win)

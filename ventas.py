@@ -5,9 +5,9 @@ from tkinter import messagebox, ttk, simpledialog
 import utils
 import sqlite3
 
-def abrir_ventana_ventas(rol_usuario="vendedor"):
+def abrir_ventana_ventas(rol_usuario="vendedor", parent=None):
     # Definir ventana y estilos dentro de la función o usar estilos globales si ya existen
-    ventana = tk.Toplevel()
+    ventana = tk.Toplevel(parent)
     utils.setup_window(ventana, "Punto de Venta Profesional")
     ventana.state('zoomed')
     ventana.configure(bg="#f0f2f5")

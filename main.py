@@ -29,16 +29,9 @@ def iniciar_app(username, rol):
     
     # Crear ventana principal
     global ventana
+    ventana = tk.Tk()
     # --- CONFIGURACIÓN DE VENTANA ---
     utils.setup_window(ventana, f"Ferretería GILPER - Sistema POS/ERP Profesional - {rol.upper()}")
-    ventana.state('zoomed') # Maximizar ventana
-    ventana.configure(bg="#f0f2f5") 
-
-    # --- TRUCO PARA ICONO EN BARRA DE TAREAS (WINDOWS) ---
-    try:
-        myappid = u'dybrocorp.ferreteria.pos.1'
-        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
-    except: pass
     # ---- ESTILOS GLOBALES ----
     style = ttk.Style()
     style.theme_use('clam')
@@ -101,27 +94,27 @@ def iniciar_app(username, rol):
 
     # --- SECCIÓN 1: POS / VENTAS (Operación Diaria) ---
     create_section(dashboard, "POS y Facturación", 0)
-    add_card_btn(dashboard, "NUEVA VENTA", "🛒", lambda: ventas.abrir_ventana_ventas(rol), 1, 0, bg="#e3f2fd") # Azulito
-    add_card_btn(dashboard, "CLIENTES (CRM)", "👥", clientes.abrir_ventana_clientes, 1, 1)
-    add_card_btn(dashboard, "CIERRE DE CAJA", "💰", lambda: cierre_caja.abrir_ventana_cierre(username, reiniciar_login), 1, 2)
+    add_card_btn(dashboard, "NUEVA VENTA", "🛒", lambda: ventas.abrir_ventana_ventas(rol, ventana), 1, 0, bg="#e3f2fd") # Azulito
+    add_card_btn(dashboard, "CLIENTES (CRM)", "👥", lambda: clientes.abrir_ventana_clientes(ventana), 1, 1)
+    add_card_btn(dashboard, "CIERRE DE CAJA", "💰", lambda: cierre_caja.abrir_ventana_cierre(username, reiniciar_login, ventana), 1, 2)
 
     # --- SECCIÓN 2: ADMINISTRACIÓN DE INVENTARIO (ERP) ---
     if rol == "admin":
         create_section(dashboard, "Gestión de Inventarios y Compras", 2)
         
-        add_card_btn(dashboard, "CATÁLOGO PRODUCTOS", "📦", productos.abrir_ventana_productos, 3, 0)
-        add_card_btn(dashboard, "INVENTARIO VALORIZADO", "📋", inventario.abrir_ventana_inventario, 3, 1)
-        add_card_btn(dashboard, "COMPRAS / ENTRADAS", "🚛", compras.abrir_ventana_compras, 3, 2)
-        add_card_btn(dashboard, "PROVEEDORES", "🏭", proveedores.abrir_ventana_proveedores, 3, 3)
+        add_card_btn(dashboard, "CATÁLOGO PRODUCTOS", "📦", lambda: productos.abrir_ventana_productos(None, ventana), 3, 0)
+        add_card_btn(dashboard, "INVENTARIO VALORIZADO", "📋", lambda: inventario.abrir_ventana_inventario(ventana), 3, 1)
+        add_card_btn(dashboard, "COMPRAS / ENTRADAS", "🚛", lambda: compras.abrir_ventana_compras(ventana), 3, 2)
+        add_card_btn(dashboard, "PROVEEDORES", "🏭", lambda: proveedores.abrir_ventana_proveedores(ventana), 3, 3)
 
     # --- SECCIÓN 3: ALTA GERENCIA / REPORTES ---
     if rol == "admin":
         create_section(dashboard, "Administración y Finanzas", 4)
         
-        add_card_btn(dashboard, "FIADORES Y CRÉDITOS", "📒", fiados.abrir_ventana_fiados, 5, 0)
+        add_card_btn(dashboard, "FIADORES Y CRÉDITOS", "📒", lambda: fiados.abrir_ventana_fiados(ventana), 5, 0)
         add_card_btn(dashboard, "REPORTE VENTAS", "📥", lambda: reportes.exportar_ventas_dia(ventana), 5, 1)
-        add_card_btn(dashboard, "CIERRE DE CAJA", "💰", lambda: cierre_caja.abrir_ventana_cierre(username, reiniciar_login), 5, 2)
-        add_card_btn(dashboard, "CONFIGURACIÓN / USER", "⚙️", configuracion.abrir_ventana, 5, 3)
+        add_card_btn(dashboard, "CIERRE DE CAJA", "💰", lambda: cierre_caja.abrir_ventana_cierre(username, reiniciar_login, ventana), 5, 2)
+        add_card_btn(dashboard, "CONFIGURACIÓN / USER", "⚙️", lambda: configuracion.abrir_ventana(ventana), 5, 3)
 
     # Footer
     footer_frame = ttk.Frame(ventana)
@@ -162,5 +155,12 @@ def check_licencia():
         iniciar_login_flow()
 
 if __name__ == "__main__":
+    # --- TRUCO PARA ICONO EN BARRA DE TAREAS (WINDOWS) ---
+    # Se debe hacer lo más pronto posible, antes de crear cualquier ventana
+    try:
+        myappid = u'dybrocorp.ferreteria.pos.1'
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+    except: pass
+
     database.crear_tablas() # Inicializar DB
     check_licencia() # Verificar licencia antes de nada

@@ -113,7 +113,13 @@ class FiadosWindow:
             messagebox.showinfo("Info", "Este crédito ya está pagado.", parent=self.root)
             return
 
-        abono = simpledialog.askfloat("Abonar", f"Cliente: {cliente}\nSaldo: {utils.formato_moneda(saldo_actual)}\n\nIngrese monto a abonar:")
+        from tkinter import simpledialog
+        abono_str = simpledialog.askstring("Abonar", 
+                                           f"Cliente: {cliente}\nSaldo: {utils.formato_moneda(saldo_actual)}\n\nIngrese monto a abonar (Ej: 10000):",
+                                           parent=self.root)
+        
+        if abono_str is None: return
+        abono = utils.limpiar_moneda(abono_str)
         
         if abono is None: return
         if abono <= 0: return
@@ -160,6 +166,6 @@ class FiadosWindow:
         except Exception as e:
             messagebox.showerror("Error", str(e), parent=self.root)
 
-def abrir_ventana_fiados():
-    win = tk.Toplevel()
+def abrir_ventana_fiados(parent=None):
+    win = tk.Toplevel(parent)
     app = FiadosWindow(win)

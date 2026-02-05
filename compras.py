@@ -191,6 +191,6 @@ class ComprasWindow:
         finally:
             conn.close()
 
-def abrir_ventana_compras():
-    win = tk.Toplevel()
+def abrir_ventana_compras(parent=None):
+    win = tk.Toplevel(parent)
     app = ComprasWindow(win)

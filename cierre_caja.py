@@ -193,6 +193,6 @@ class CierreCajaWindow:
             finally:
                 conn.close()
 
-def abrir_ventana_cierre(username="Admin", on_close_callback=None):
-    win = tk.Toplevel()
+def abrir_ventana_cierre(username="Admin", on_close_callback=None, parent=None):
+    win = tk.Toplevel(parent)
     app = CierreCajaWindow(win, username, on_close_callback)

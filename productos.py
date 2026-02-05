@@ -3,8 +3,8 @@ import utils
 from tkinter import messagebox, ttk
 import sqlite3
 
-def abrir_ventana_productos(filtro_inicial=None):
-    ventana = tk.Toplevel()
+def abrir_ventana_productos(filtro_inicial=None, parent=None):
+    ventana = tk.Toplevel(parent)
     utils.setup_window(ventana, "Gestión de Productos", "1000x600")
     # ventana.resizable(False, False) # Permitir redimensionar para la tabla
 
