@@ -15,12 +15,27 @@ def formato_moneda(valor):
     """
     Formatea un valor numérico a peso colombiano:
     Ej: 15000 -> $15.000
-    Ej: 1000000 -> $1.000.000
     Sin decimales.
     """
     try:
         if valor is None: valor = 0
         valor = float(valor)
+        # Usamos formato con comas y luego cambiamos coma por punto para estilo COP
         return f"${valor:,.0f}".replace(",", ".")
     except:
         return "$0"
+
+def limpiar_moneda(texto_moneda):
+    """
+    Convierte un string formateado ($15.000) de vuelta a float (15000.0).
+    Maneja el símbolo $ y los puntos de miles.
+    """
+    try:
+        if not texto_moneda: return 0.0
+        # Eliminar el signo $, espacios y los puntos (miles en COP)
+        limpio = str(texto_moneda).replace("$", "").replace(" ", "").replace(".", "")
+        # Si por alguna razón hay comas (decimales), las pasamos a puntos para float()
+        limpio = limpio.replace(",", ".")
+        return float(limpio)
+    except:
+        return 0.0

@@ -106,8 +106,8 @@ class FiadosWindow:
         vals = item['values']
         credito_id = vals[0]
         cliente = vals[1]
-        saldo_actual_str = vals[4].replace("$", "").replace(",", "")
-        saldo_actual = float(saldo_actual_str)
+        # Usar el nuevo helper para parsear el saldo de forma segura
+        saldo_actual = utils.limpiar_moneda(vals[4])
 
         if saldo_actual <= 0:
             messagebox.showinfo("Info", "Este crédito ya está pagado.")
