@@ -2,7 +2,8 @@ import sqlite3
 
 def fix():
     try:
-        conn = sqlite3.connect("ferreteria.db")
+        import database
+        conn = database.conectar()
         cursor = conn.cursor()
         
         # Columnas faltantes para Clientes

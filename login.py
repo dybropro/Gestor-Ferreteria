@@ -107,7 +107,8 @@ class LoginWindow:
             messagebox.showwarning("Atención", "Por favor ingrese usuario y contraseña", parent=self.root)
             return
 
-        conn = sqlite3.connect("ferreteria.db")
+        import database
+        conn = database.conectar()
         cursor = conn.cursor()
         cursor.execute("SELECT role FROM usuarios WHERE username=? AND password=?", (username, password))
         user = cursor.fetchone()

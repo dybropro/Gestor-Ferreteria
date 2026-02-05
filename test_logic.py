@@ -7,7 +7,8 @@ def test_logic():
     print("Iniciando prueba de lógica de negocio...")
     
     # 1. Setup DB and Dummy Product
-    conn = sqlite3.connect("ferreteria.db")
+    import database
+    conn = database.conectar()
     cursor = conn.cursor()
     
     # Ensure tables exist

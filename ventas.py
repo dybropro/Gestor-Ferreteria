@@ -125,7 +125,8 @@ def abrir_ventana_ventas(rol_usuario="vendedor"):
         query = entry_cliente.get().strip()
         if not query: return
         
-        conn = sqlite3.connect("ferreteria.db")
+        import database
+        conn = database.conectar()
         cursor = conn.cursor()
         cursor.execute("SELECT id, cedula, nombre, telefono, direccion FROM clientes WHERE cedula = ? OR nombre LIKE ?", (query, f"%{query}%"))
         res = cursor.fetchone()
@@ -167,7 +168,8 @@ def abrir_ventana_ventas(rol_usuario="vendedor"):
                                            initialvalue=prod['cantidad'], minvalue=1)
         if new_cant:
             # Validar stock real BD
-            conn = sqlite3.connect("ferreteria.db")
+            import database
+            conn = database.conectar()
             cur = conn.cursor()
             cur.execute("SELECT stock from productos WHERE id=?", (prod['id'],))
             s = cur.fetchone()[0]
@@ -213,7 +215,8 @@ def abrir_ventana_ventas(rol_usuario="vendedor"):
             if not cliente_actual_id: return messagebox.showerror("Error", "Debe seleccionar un cliente para fiar", parent=ventana)
             if not messagebox.askyesno("Confirmar", f"¿Fiar venta por {utils.formato_moneda(total)}?", parent=ventana): return
 
-        conn = sqlite3.connect("ferreteria.db")
+        import database
+        conn = database.conectar()
         try:
             # Venta Header
             cur = conn.execute("""INSERT INTO ventas (fecha, total, cliente, cliente_id, metodo_pago, impuesto) 

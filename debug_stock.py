@@ -3,7 +3,8 @@ import time
 
 def debug_stock():
     try:
-        conn = sqlite3.connect("ferreteria.db")
+        import database
+        conn = database.conectar()
         cur = conn.cursor()
         
         # 1. Crear producto de prueba
