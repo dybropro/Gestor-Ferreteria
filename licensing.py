@@ -34,15 +34,20 @@ def get_machine_id():
         print(f"Error generando Machine ID: {e}")
         return "HARDWARE-ERROR-ID"
 
-def generate_serial(machine_id, months):
-    """Genera un serial basado en el Machine ID y la cantidad de meses (Uso para KeyGen)."""
-    # Formato: SERIAL-HASH(ID + MONTHS + SALT)
-    expiration_date = (datetime.now() + timedelta(days=30 * months)).strftime("%Y-%m-%d")
-    raw_data = f"{machine_id}-{months}-{expiration_date}-{SECRET_SALT}"
+def generate_serial(machine_id, duration, unit='M'):
+    """Genera un serial basado en el Machine ID y el periodo (D para días, M para meses)."""
+    # unit puede ser 'M' (meses) o 'D' (días)
+    if unit == 'M':
+        days_to_add = 30 * duration
+    else:
+        days_to_add = duration
+        
+    expiration_date = (datetime.now() + timedelta(days=days_to_add)).strftime("%Y-%m-%d")
+    raw_data = f"{machine_id}-{duration}{unit}-{expiration_date}-{SECRET_SALT}"
     hashed = hashlib.sha256(raw_data.encode()).hexdigest()[:12].upper()
     
-    # El serial codifica la fecha de vencimiento y el hash de seguridad
-    return f"{months}M-{hashed}-{expiration_date.replace('-', '')}"
+    # El serial codifica la duración, unidad y el hash de seguridad
+    return f"{duration}{unit}-{hashed}-{expiration_date.replace('-', '')}"
 
 def validate_serial(machine_id, serial):
     """Valida si un serial es válido para esta máquina y no ha expirado."""
@@ -51,8 +56,18 @@ def validate_serial(machine_id, serial):
         if len(parts) != 3:
             return False, "Formato de serial inválido"
             
-        months_part = parts[0].replace('M', '')
-        months = int(months_part)
+        period_part = parts[0]
+        if period_part.endswith('M'):
+            unit = 'M'
+            duration = int(period_part.replace('M', ''))
+        elif period_part.endswith('D'):
+            unit = 'D'
+            duration = int(period_part.replace('D', ''))
+        else:
+            # Fallback para seriales viejos que solo tenían el número (asumiendo meses)
+            unit = 'M'
+            duration = int(period_part)
+            
         hash_part = parts[1]
         date_raw = parts[2] # AAAAMMDD
         
@@ -62,8 +77,9 @@ def validate_serial(machine_id, serial):
         if datetime.now() > expiration_date:
             return False, "El serial ha expirado"
             
-        # Re-generar hash para verificar autenticidad
-        raw_data = f"{machine_id}-{months}-{expiration_date_str}-{SECRET_SALT}"
+        # Re-generar hash para verificar autenticidad usando el formato exacto del periodo
+        # Si era el formato viejo sin letra, intentamos ambos por si acaso
+        raw_data = f"{machine_id}-{period_part}-{expiration_date_str}-{SECRET_SALT}"
         expected_hash = hashlib.sha256(raw_data.encode()).hexdigest()[:12].upper()
         
         if hash_part == expected_hash:
