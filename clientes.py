@@ -6,8 +6,7 @@ from datetime import datetime, timedelta
 class ClientesWindow:
     def __init__(self, root):
         self.root = root
-        self.root.title("CRM & Gestión de Clientes 360")
-        self.root.geometry("1100x700")
+        utils.setup_window(self.root, "CRM & Gestión de Clientes 360", "1100x700")
         self.root.configure(bg="#f0f2f5")
         
         self.selected_id = None
@@ -167,8 +166,8 @@ class ClientesWindow:
             conn.commit()
             self.limpiar()
             self.cargar_datos()
-            messagebox.showinfo("OK", "Datos guardados")
-        except Exception as e: messagebox.showerror("Error", str(e))
+            messagebox.showinfo("OK", "Datos guardados", parent=self.root)
+        except Exception as e: messagebox.showerror("Error", str(e), parent=self.root)
         finally: conn.close()
 
     def seleccionar(self, e):

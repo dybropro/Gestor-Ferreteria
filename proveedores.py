@@ -5,8 +5,7 @@ import sqlite3
 class ProveedoresWindow:
     def __init__(self, root):
         self.root = root
-        self.root.title("Gestión de Proveedores")
-        self.root.geometry("900x600")
+        utils.setup_window(self.root, "Gestión de Proveedores", "900x600")
         self.root.configure(bg="#f0f2f5")
 
         self.selected_id = None
@@ -82,7 +81,7 @@ class ProveedoresWindow:
         data = {k: v.get() for k, v in self.entries.items()}
         
         if not data['razon_social']:
-            messagebox.showwarning("Error", "La Razón Social es obligatoria")
+            messagebox.showwarning("Error", "La Razón Social es obligatoria", parent=self.root)
             return
 
         conn = self.conectar()
@@ -92,21 +91,21 @@ class ProveedoresWindow:
                     UPDATE proveedores SET nit=?, razon_social=?, telefono=?, direccion=?, asesor=?, email=?
                     WHERE id=?
                 """, (*data.values(), self.selected_id))
-                messagebox.showinfo("Éxito", "Proveedor actualizado")
+                messagebox.showinfo("Éxito", "Proveedor actualizado", parent=self.root)
             else:
                 conn.execute("""
                     INSERT INTO proveedores (nit, razon_social, telefono, direccion, asesor, email)
                     VALUES (?, ?, ?, ?, ?, ?)
                 """, tuple(data.values()))
-                messagebox.showinfo("Éxito", "Proveedor registrado")
+                messagebox.showinfo("Éxito", "Proveedor registrado", parent=self.root)
                 
             conn.commit()
             self.limpiar()
             self.cargar_datos()
         except sqlite3.IntegrityError:
-            messagebox.showerror("Error", "El NIT ya está registrado")
+            messagebox.showerror("Error", "El NIT ya está registrado", parent=self.root)
         except Exception as e:
-            messagebox.showerror("Error", str(e))
+            messagebox.showerror("Error", str(e), parent=self.root)
         finally:
             conn.close()
 
@@ -128,7 +127,7 @@ class ProveedoresWindow:
 
     def eliminar(self):
         if not self.selected_id: return
-        if messagebox.askyesno("Confirmar", "¿Eliminar proveedor?"):
+        if messagebox.askyesno("Confirmar", "¿Eliminar proveedor?", parent=self.root):
             conn = self.conectar()
             conn.execute("DELETE FROM proveedores WHERE id=?", (self.selected_id,))
             conn.commit()

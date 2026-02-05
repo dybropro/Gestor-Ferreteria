@@ -8,7 +8,7 @@ import sqlite3
 def abrir_ventana_ventas(rol_usuario="vendedor"):
     # Definir ventana y estilos dentro de la función o usar estilos globales si ya existen
     ventana = tk.Toplevel()
-    ventana.title("Punto de Venta Profesional")
+    utils.setup_window(ventana, "Punto de Venta Profesional")
     ventana.state('zoomed')
     ventana.configure(bg="#f0f2f5")
 
@@ -60,7 +60,7 @@ def abrir_ventana_ventas(rol_usuario="vendedor"):
             agregar_al_carrito(producto)
             entry_busqueda.delete(0, tk.END)
         else:
-            messagebox.showerror("Error", "Producto no encontrado")
+            messagebox.showerror("Error", "Producto no encontrado", parent=ventana)
 
     def seleccionar_producto(resultados):
         top = tk.Toplevel(ventana)
@@ -99,7 +99,7 @@ def abrir_ventana_ventas(rol_usuario="vendedor"):
         id_prod, nombre, precio, stock, codigo = producto
 
         if stock <= 0:
-            if not messagebox.askyesno("Alerta Stock", f"El producto '{nombre}' no tiene stock (0). ¿Agregar de todas formas?"):
+            if not messagebox.askyesno("Alerta Stock", f"El producto '{nombre}' no tiene stock (0). ¿Agregar de todas formas?", parent=ventana):
                 return
         
         # Check stock mínimo alert
@@ -172,7 +172,7 @@ def abrir_ventana_ventas(rol_usuario="vendedor"):
             conn.close()
             
             if new_cant > s:
-                messagebox.showwarning("Stock Insuficiente", f"Solo hay {s} unidades disponibles.")
+                messagebox.showwarning("Stock Insuficiente", f"Solo hay {s} unidades disponibles.", parent=ventana)
                 return
 
             carrito[idx]['cantidad'] = new_cant
@@ -180,7 +180,7 @@ def abrir_ventana_ventas(rol_usuario="vendedor"):
 
     def eliminar_item(event):
         if rol_usuario != "admin":
-            messagebox.showerror("Acceso Denegado", "Solo el ADMINISTRADOR puede eliminar items del carrito.")
+            messagebox.showerror("Acceso Denegado", "Solo el ADMINISTRADOR puede eliminar items del carrito.", parent=ventana)
             return
 
         item = tree_cart.selection()
@@ -189,13 +189,13 @@ def abrir_ventana_ventas(rol_usuario="vendedor"):
         idx = tree_cart.index(item[0])
         prod_name = carrito[idx]['nombre']
         
-        if messagebox.askyesno("Confirmar", f"¿Eliminar '{prod_name}' del carrito?"):
+        if messagebox.askyesno("Confirmar", f"¿Eliminar '{prod_name}' del carrito?", parent=ventana):
             del carrito[idx]
             actualizar_lista()
 
     def finalizar_venta(es_credito=False):
         nonlocal cliente_actual_id, cliente_data_completa
-        if not carrito: return messagebox.showwarning("Error", "Carrito vacio")
+        if not carrito: return messagebox.showwarning("Error", "Carrito vacio", parent=ventana)
         
         # Recalcular
         subtotal = sum(i['precio']*i['cantidad'] for i in carrito)
@@ -208,8 +208,8 @@ def abrir_ventana_ventas(rol_usuario="vendedor"):
         cli_nombre = entry_cliente.get().strip() or "Público General"
         
         if es_credito:
-            if not cliente_actual_id: return messagebox.showerror("Error", "Debe seleccionar un cliente para fiar")
-            if not messagebox.askyesno("Confirmar", f"¿Fiar venta por {utils.formato_moneda(total)}?"): return
+            if not cliente_actual_id: return messagebox.showerror("Error", "Debe seleccionar un cliente para fiar", parent=ventana)
+            if not messagebox.askyesno("Confirmar", f"¿Fiar venta por {utils.formato_moneda(total)}?", parent=ventana): return
 
         conn = sqlite3.connect("ferreteria.db")
         try:
@@ -236,7 +236,7 @@ def abrir_ventana_ventas(rol_usuario="vendedor"):
             datos = cliente_data_completa if cliente_data_completa else {"nombre": cli_nombre}
             factura.generar_factura(carrito, total, vid, fecha, datos, medio, impuesto, subtotal)
             
-            messagebox.showinfo("OK", "Venta registrada")
+            messagebox.showinfo("OK", "Venta registrada", parent=ventana)
             
             # Reset
             carrito.clear()
@@ -248,7 +248,7 @@ def abrir_ventana_ventas(rol_usuario="vendedor"):
             
         except Exception as e:
             conn.rollback()
-            messagebox.showerror("Error", str(e))
+            messagebox.showerror("Error", str(e), parent=ventana)
         finally:
             conn.close()
 

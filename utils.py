@@ -39,3 +39,34 @@ def limpiar_moneda(texto_moneda):
         return float(limpio)
     except:
         return 0.0
+
+def set_window_icon(ventana):
+    """
+    Establece el icono de DybroCorp en la ventana proporcionada para quitar la 'plumita'.
+    """
+    try:
+        from PIL import Image, ImageTk
+        icon_path = resource_path("logo_dybrocorp_dark.ico")
+        if os.path.exists(icon_path):
+            ventana.iconbitmap(icon_path)
+        else:
+            icon_png = resource_path("logo_dybrocorp_dark.png")
+            if os.path.exists(icon_png):
+                img = Image.open(icon_png)
+                img_icon = ImageTk.PhotoImage(img)
+                ventana.iconphoto(False, img_icon)
+                ventana._icon_ref = img_icon # Evitar que sea recolectado por el GC
+    except Exception as e:
+        print(f"Error estableciendo icono: {e}")
+
+def setup_window(ventana, title, geometry=None):
+    """
+    Configuración estándar para todas las ventanas: título, icono y persistencia.
+    """
+    ventana.title(title)
+    set_window_icon(ventana)
+    if geometry:
+        ventana.geometry(geometry)
+    
+    # Asegurar que los diálogos aparezcan encima si se usa esta ventana como padre
+    # ventana.lift() # Opcional: traer al frente al abrir

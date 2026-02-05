@@ -10,8 +10,7 @@ class CierreCajaWindow:
         self.root = root
         self.username = username
         self.on_close_callback = on_close_callback
-        self.root.title("Cierre de Caja (Turno Actual)")
-        self.root.geometry("600x700")
+        utils.setup_window(self.root, "Cierre de Caja (Turno Actual)", "600x700")
         self.root.configure(bg="#f0f2f5")
 
         self.fecha_cierre_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -169,7 +168,7 @@ class CierreCajaWindow:
         self.diferencia_final = dif_total
 
     def guardar_cierre(self):
-        if messagebox.askyesno("Confirmar Cierre", "¿Cerrar turno? Los contadores se reiniciarán a $0."):
+        if messagebox.askyesno("Confirmar Cierre", "¿Cerrar turno? Los contadores se reiniciarán a $0.", parent=self.root):
             detalle = {}
             for child in self.tree.get_children():
                 vals = self.tree.item(child)["values"]
@@ -184,12 +183,12 @@ class CierreCajaWindow:
                     VALUES (?, ?, ?, ?, ?, ?)
                 """, (timestamp, self.username, self.total_esperado_final, self.total_real_final, self.diferencia_final, json.dumps(detalle)))
                 conn.commit()
-                messagebox.showinfo("Cierre Exitoso", f"TURNO CERRADO.\nPróximo arqueo contará desde {timestamp}.\n\nCerrando sesión...")
+                messagebox.showinfo("Cierre Exitoso", f"TURNO CERRADO.\nPróximo arqueo contará desde {timestamp}.\n\nCerrando sesión...", parent=self.root)
                 self.root.destroy()
                 if self.on_close_callback:
                     self.on_close_callback()
             except Exception as e:
-                messagebox.showerror("Error", str(e))
+                messagebox.showerror("Error", str(e), parent=self.root)
             finally:
                 conn.close()
 

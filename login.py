@@ -11,8 +11,7 @@ class LoginWindow:
     def __init__(self, root, on_login_success):
         self.root = root
         self.on_login_success = on_login_success
-        self.root.title("Acceso al Sistema")
-        self.root.geometry("400x600")
+        utils.setup_window(self.root, "Acceso al Sistema", "400x600")
         self.root.resizable(False, False)
         self.root.configure(bg="#f0f2f5") # Gris muy suave
 
@@ -21,22 +20,6 @@ class LoginWindow:
             myappid = u'dybrocorp.ferreteria.pos.1' # ID único
             ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
         except: pass
-
-        # Icono de ventana (.ico para mejor compatibilidad en Windows)
-        try:
-            icon_path = utils.resource_path("logo_dybrocorp_dark.ico")
-            if os.path.exists(icon_path):
-                self.root.iconbitmap(icon_path)
-            else:
-                # Fallback a PNG si no existe el .ico
-                icon_png = utils.resource_path("logo_dybrocorp_dark.png")
-                if os.path.exists(icon_png):
-                    img_icon = Image.open(icon_png)
-                    photo_icon = ImageTk.PhotoImage(img_icon)
-                    self.root.iconphoto(False, photo_icon)
-                    self.icon_ref = photo_icon
-        except Exception as e:
-            print(f"Error cargando icono: {e}")
 
         # Estilos
         self.style = ttk.Style()
@@ -121,7 +104,7 @@ class LoginWindow:
         password = self.entry_pass.get()
 
         if not username or not password:
-            messagebox.showwarning("Atención", "Por favor ingrese usuario y contraseña")
+            messagebox.showwarning("Atención", "Por favor ingrese usuario y contraseña", parent=self.root)
             return
 
         conn = sqlite3.connect("ferreteria.db")
@@ -154,11 +137,11 @@ class LoginWindow:
                          
                          if datetime.now() < allowed_access:
                              messagebox.showerror("Acceso Restringido", 
-                                                  f"Usted cerró caja recientemente.\n\nAcceso permitido a partir de:\n{allowed_access.strftime('%d/%m/%Y %I:%M %p')}")
+                                                  f"Usted cerró caja recientemente.\n\nAcceso permitido a partir de:\n{allowed_access.strftime('%d/%m/%Y %I:%M %p')}", parent=self.root)
                              return
                      except Exception as e:
                          print(f"Error val fecha: {e}")
 
             self.on_login_success(username, role)
         else:
-            messagebox.showerror("Error", "Credenciales incorrectas")
+            messagebox.showerror("Error", "Credenciales incorrectas", parent=self.root)

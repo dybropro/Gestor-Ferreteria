@@ -4,10 +4,8 @@ from datetime import datetime
 from tkinter import messagebox
 import os
 
-def exportar_ventas_dia():
+def exportar_ventas_dia(parent_win=None):
     fecha_hoy = datetime.now().strftime("%Y-%m-%d") # Formato en BD suele ser YYYY-MM-DD
-    # Nota: En ventas.py guardamos con hora: %Y-%m-%d %H:%M:%S. 
-    # Para filtrar por día necesitamos LIKE '2024-05-20%'
 
     conn = sqlite3.connect("ferreteria.db")
     cursor = conn.cursor()
@@ -28,7 +26,7 @@ def exportar_ventas_dia():
     conn.close()
 
     if not filas:
-        messagebox.showinfo("Reportes", "No hay ventas registradas hoy para exportar.")
+        messagebox.showinfo("Reportes", "No hay ventas registradas hoy para exportar.", parent=parent_win)
         return
 
     # Nombre del archivo
@@ -41,7 +39,7 @@ def exportar_ventas_dia():
                              "CODIGO PROD", "PRODUCTO", "CANTIDAD", "PRECIO UNIT", "SUBTOTAL LINEA"])
             writer.writerows(filas)
             
-        messagebox.showinfo("Éxito", f"Reporte generado: {filename}\n\nSe ha guardado en la carpeta del programa.")
+        messagebox.showinfo("Éxito", f"Reporte generado: {filename}\n\nSe ha guardado en la carpeta del programa.", parent=parent_win)
         os.startfile(filename)
     except Exception as e:
-        messagebox.showerror("Error", f"No se pudo generar el reporte: {e}")
+        messagebox.showerror("Error", f"No se pudo generar el reporte: {e}", parent=parent_win)

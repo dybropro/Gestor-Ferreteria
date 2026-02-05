@@ -9,8 +9,7 @@ import os
 class FiadosWindow:
     def __init__(self, root):
         self.root = root
-        self.root.title("Gestión de Créditos y Fiadores")
-        self.root.geometry("1100x700")
+        utils.setup_window(self.root, "Gestión de Créditos y Fiadores", "1100x700")
         self.root.configure(bg="#f0f2f5") # Gris claro
 
         # Estilos visuales para estados
@@ -99,7 +98,7 @@ class FiadosWindow:
     def registrar_abono(self):
         sel = self.tree.selection()
         if not sel:
-            messagebox.showwarning("Atención", "Seleccione un crédito para abonar.")
+            messagebox.showwarning("Atención", "Seleccione un crédito para abonar.", parent=self.root)
             return
             
         item = self.tree.item(sel[0])
@@ -110,7 +109,7 @@ class FiadosWindow:
         saldo_actual = utils.limpiar_moneda(vals[4])
 
         if saldo_actual <= 0:
-            messagebox.showinfo("Info", "Este crédito ya está pagado.")
+            messagebox.showinfo("Info", "Este crédito ya está pagado.", parent=self.root)
             return
 
         abono = simpledialog.askfloat("Abonar", f"Cliente: {cliente}\nSaldo: {utils.formato_moneda(saldo_actual)}\n\nIngrese monto a abonar:")
@@ -119,7 +118,7 @@ class FiadosWindow:
         if abono <= 0: return
         
         if abono > saldo_actual:
-            messagebox.showerror("Error", "El abono no puede superar el saldo pendiente.")
+            messagebox.showerror("Error", "El abono no puede superar el saldo pendiente.", parent=self.root)
             return
 
         new_saldo = saldo_actual - abono
@@ -136,11 +135,11 @@ class FiadosWindow:
                          (new_saldo, new_estado, credito_id))
             
             conn.commit()
-            messagebox.showinfo("Éxito", "Abono registrado correctamente.")
+            messagebox.showinfo("Éxito", "Abono registrado correctamente.", parent=self.root)
             self.cargar_datos()
             
         except Exception as e:
-            messagebox.showerror("Error", str(e))
+            messagebox.showerror("Error", str(e), parent=self.root)
         finally:
             conn.close()
 
@@ -155,10 +154,10 @@ class FiadosWindow:
                     vals = self.tree.item(child)['values']
                     writer.writerow(vals)
                     
-            messagebox.showinfo("Exportado", f"Archivo guardado: {filename}")
+            messagebox.showinfo("Exportado", f"Archivo guardado: {filename}", parent=self.root)
             os.startfile(filename)
         except Exception as e:
-            messagebox.showerror("Error", str(e))
+            messagebox.showerror("Error", str(e), parent=self.root)
 
 def abrir_ventana_fiados():
     win = tk.Toplevel()

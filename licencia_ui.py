@@ -9,8 +9,8 @@ class LicenciaWindow:
     def __init__(self, root, on_success):
         self.root = root
         self.on_success = on_success
-        self.root.title("Activación de Sistema - DybroCorp")
-        self.root.geometry("500x450")
+        self.on_success = on_success
+        utils.setup_window(self.root, "Activación de Sistema - DybroCorp", "500x450")
         self.root.resizable(False, False)
         self.root.configure(bg="#f0f2f5")
         
@@ -61,7 +61,7 @@ class LicenciaWindow:
     def validar_y_guardar(self):
         serial = self.serial_entry.get().strip().upper()
         if not serial:
-            messagebox.showerror("Error", "Por favor ingrese un código.")
+            messagebox.showerror("Error", "Por favor ingrese un código.", parent=self.root)
             return
             
         is_valid, info = licensing.validate_serial(self.machine_id, serial)
@@ -76,14 +76,14 @@ class LicenciaWindow:
                 conn.commit()
                 conn.close()
                 
-                messagebox.showinfo("Éxito", f"Sistema activado correctamente hasta {info}.\nGracias por preferir DybroCorp.")
+                messagebox.showinfo("Éxito", f"Sistema activado correctamente hasta {info}.\nGracias por preferir DybroCorp.", parent=self.root)
                 self.root.destroy()
                 if self.on_success:
                     self.on_success()
             except Exception as e:
-                messagebox.showerror("Error DB", f"No se pudo guardar la activación: {e}")
+                messagebox.showerror("Error DB", f"No se pudo guardar la activación: {e}", parent=self.root)
         else:
-            messagebox.showerror("Código Inválido", info)
+            messagebox.showerror("Código Inválido", info, parent=self.root)
 
 def mostrar_ventana_licencia(on_success_callback):
     root = tk.Tk()

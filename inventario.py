@@ -6,8 +6,7 @@ import sqlite3
 class InventarioWindow:
     def __init__(self, root):
         self.root = root
-        self.root.title("Inventario Valorizado y Alertas")
-        self.root.geometry("1100x700")
+        utils.setup_window(self.root, "Inventario Valorizado y Alertas", "1100x700")
         self.root.configure(bg="#f0f2f5")
 
         # Header Stats

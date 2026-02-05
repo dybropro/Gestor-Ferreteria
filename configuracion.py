@@ -5,8 +5,7 @@ import sqlite3
 class ConfigWindow:
     def __init__(self, root):
         self.root = root
-        self.root.title("Configuración del Sistema")
-        self.root.geometry("900x700")
+        utils.setup_window(self.root, "Configuración del Sistema", "900x700")
         self.root.configure(bg="#f0f2f5")
         
         main_frame = ttk.Frame(root, padding=20)
@@ -68,9 +67,9 @@ class ConfigWindow:
                 val = entry.get()
                 cursor.execute("INSERT OR REPLACE INTO configuracion (clave, valor) VALUES (?, ?)", (key, val))
             conn.commit()
-            messagebox.showinfo("Éxito", "Datos de empresa actualizados.")
+            messagebox.showinfo("Éxito", "Datos de empresa actualizados.", parent=self.root)
         except Exception as e:
-            messagebox.showerror("Error", str(e))
+            messagebox.showerror("Error", str(e), parent=self.root)
         finally:
             conn.close()
 
@@ -126,22 +125,22 @@ class ConfigWindow:
         role = self.combo_role.get()
 
         if not new_user or not new_pass:
-            messagebox.showwarning("Error", "Complete todos los campos")
+            messagebox.showwarning("Error", "Complete todos los campos", parent=self.root)
             return
 
         conn = self.conectar()
         try:
             conn.execute("INSERT INTO usuarios (username, password, role) VALUES (?, ?, ?)", (new_user, new_pass, role))
             conn.commit()
-            messagebox.showinfo("Éxito", f"Usuario '{new_user}' creado correctamente.")
+            messagebox.showinfo("Éxito", f"Usuario '{new_user}' creado correctamente.", parent=self.root)
             self.entry_create_user.delete(0, tk.END)
             self.entry_create_pass.delete(0, tk.END)
             # Actualizar lista de usuarios para cambiar pass
             self.combo_user['values'] = self.get_users()
         except sqlite3.IntegrityError:
-            messagebox.showerror("Error", "El nombre de usuario ya existe.")
+            messagebox.showerror("Error", "El nombre de usuario ya existe.", parent=self.root)
         except Exception as e:
-            messagebox.showerror("Error", str(e))
+            messagebox.showerror("Error", str(e), parent=self.root)
         finally:
             conn.close()
 
@@ -150,17 +149,17 @@ class ConfigWindow:
         new_pass = self.entry_new_pass.get()
         
         if not new_pass:
-            messagebox.showwarning("Atención", "La contraseña no puede estar vacía")
+            messagebox.showwarning("Atención", "La contraseña no puede estar vacía", parent=self.root)
             return
 
         conn = self.conectar()
         try:
             conn.execute("UPDATE usuarios SET password=? WHERE username=?", (new_pass, user))
             conn.commit()
-            messagebox.showinfo("Éxito", f"Contraseña de '{user}' actualizada.")
+            messagebox.showinfo("Éxito", f"Contraseña de '{user}' actualizada.", parent=self.root)
             self.entry_new_pass.delete(0, tk.END)
         except Exception as e:
-            messagebox.showerror("Error", str(e))
+            messagebox.showerror("Error", str(e), parent=self.root)
         finally:
             conn.close()
 

@@ -7,8 +7,7 @@ from datetime import datetime
 class ComprasWindow:
     def __init__(self, root):
         self.root = root
-        self.root.title("Gestión de Compras (Entrada de Inventario)")
-        self.root.geometry("1100x700")
+        utils.setup_window(self.root, "Gestión de Compras (Entrada de Inventario)", "1100x700")
         self.root.configure(bg="#f0f2f5")
 
         self.cart = []
@@ -119,7 +118,7 @@ class ComprasWindow:
             cant = int(self.entry_cant.get())
             costo = float(self.entry_costo.get())
         except ValueError:
-            messagebox.showwarning("Error", "Cantidad y Costo deben ser números")
+            messagebox.showwarning("Error", "Cantidad y Costo deben ser números", parent=self.root)
             return
 
         subtotal = cant * costo
@@ -153,7 +152,7 @@ class ComprasWindow:
         if not self.cart: return
         prov_name = self.combo_prov.get()
         if not prov_name:
-            messagebox.showwarning("Error", "Seleccione un proveedor")
+            messagebox.showwarning("Error", "Seleccione un proveedor", parent=self.root)
             return
             
         prov_id = self.map_prov[prov_name]
@@ -161,7 +160,7 @@ class ComprasWindow:
         total = sum(i['subtotal'] for i in self.cart)
         fecha = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-        if not messagebox.askyesno("Confirmar", f"¿Registrar compra por {utils.formato_moneda(total)}? Esto aumentará el stock."):
+        if not messagebox.askyesno("Confirmar", f"¿Registrar compra por {utils.formato_moneda(total)}? Esto aumentará el stock.", parent=self.root):
             return
 
         conn = self.conectar()
@@ -182,12 +181,12 @@ class ComprasWindow:
                              (item['cantidad'], item['costo'], item['id']))
             
             conn.commit()
-            messagebox.showinfo("Éxito", "Compra registrada e inventario actualizado.")
+            messagebox.showinfo("Éxito", "Compra registrada e inventario actualizado.", parent=self.root)
             self.root.destroy()
             
         except Exception as e:
             conn.rollback()
-            messagebox.showerror("Error", str(e))
+            messagebox.showerror("Error", str(e), parent=self.root)
         finally:
             conn.close()
 

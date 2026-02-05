@@ -4,8 +4,7 @@ import sqlite3
 
 def abrir_ventana_productos(filtro_inicial=None):
     ventana = tk.Toplevel()
-    ventana.title("Gestión de Productos")
-    ventana.geometry("1000x600")
+    utils.setup_window(ventana, "Gestión de Productos", "1000x600")
     # ventana.resizable(False, False) # Permitir redimensionar para la tabla
 
     # Variable para guardar el ID del producto seleccionado para edición
@@ -82,7 +81,7 @@ def abrir_ventana_productos(filtro_inicial=None):
         stock_mimimo = entry_min_stock.get()
 
         if codigo == "" or nombre == "":
-            messagebox.showerror("Error", "Código y nombre son obligatorios")
+            messagebox.showerror("Error", "Código y nombre son obligatorios", parent=ventana)
             return
 
         conexion = conectar()
@@ -96,23 +95,23 @@ def abrir_ventana_productos(filtro_inicial=None):
                     SET codigo=?, nombre=?, categoria=?, precio_compra=?, precio_venta=?, stock=?, stock_minimo=?
                     WHERE id=?
                 """, (codigo, nombre, categoria, precio_compra, precio_venta, stock, stock_mimimo, producto_seleccionado_id))
-                messagebox.showinfo("Éxito", "Producto actualizado correctamente")
+                messagebox.showinfo("Éxito", "Producto actualizado correctamente", parent=ventana)
             else:
                 # MODO CREACIÓN
                 cursor.execute("""
                     INSERT INTO productos (codigo, nombre, categoria, precio_compra, precio_venta, stock, stock_minimo)
                     VALUES (?, ?, ?, ?, ?, ?, ?)
                 """, (codigo, nombre, categoria, precio_compra, precio_venta, stock, stock_mimimo))
-                messagebox.showinfo("Éxito", "Producto registrado correctamente")
+                messagebox.showinfo("Éxito", "Producto registrado correctamente", parent=ventana)
             
             conexion.commit()
             limpiar_campos()
             cargar_productos()
 
         except sqlite3.IntegrityError:
-            messagebox.showerror("Error", "El código de barras ya existe (o hay conflicto en base de datos).")
+            messagebox.showerror("Error", "El código de barras ya existe (o hay conflicto en base de datos).", parent=ventana)
         except Exception as e:
-            messagebox.showerror("Error", f"Ocurrió un error: {e}")
+            messagebox.showerror("Error", f"Ocurrió un error: {e}", parent=ventana)
         finally:
             conexion.close()
 
@@ -156,7 +155,7 @@ def abrir_ventana_productos(filtro_inicial=None):
     def eliminar_producto():
         seleccion = tree.selection()
         if not seleccion:
-            messagebox.showwarning("Atención", "Seleccione un producto para eliminar")
+            messagebox.showwarning("Atención", "Seleccione un producto para eliminar", parent=ventana)
             return
         
         item = tree.item(seleccion[0])
@@ -171,7 +170,7 @@ def abrir_ventana_productos(filtro_inicial=None):
             cursor.execute("DELETE FROM productos WHERE id=?", (prod_id,))
             conexion.commit()
             conexion.close()
-            messagebox.showinfo("Éxito", "Producto eliminado")
+            messagebox.showinfo("Éxito", "Producto eliminado", parent=ventana)
             limpiar_campos()
             cargar_productos()
 

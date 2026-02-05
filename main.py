@@ -29,8 +29,8 @@ def iniciar_app(username, rol):
     
     # Crear ventana principal
     global ventana
-    ventana = tk.Tk()
-    ventana.title(f"Ferretería GILPER - Sistema POS/ERP Profesional - {rol.upper()}")
+    # --- CONFIGURACIÓN DE VENTANA ---
+    utils.setup_window(ventana, f"Ferretería GILPER - Sistema POS/ERP Profesional - {rol.upper()}")
     ventana.state('zoomed') # Maximizar ventana
     ventana.configure(bg="#f0f2f5") 
 
@@ -39,21 +39,6 @@ def iniciar_app(username, rol):
         myappid = u'dybrocorp.ferreteria.pos.1'
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
     except: pass
-
-    # Icono de ventana (.ico para mejor compatibilidad)
-    try:
-        icon_path = utils.resource_path("logo_dybrocorp_dark.ico")
-        if os.path.exists(icon_path):
-            ventana.iconbitmap(icon_path)
-        else:
-            icon_png = utils.resource_path("logo_dybrocorp_dark.png")
-            if os.path.exists(icon_png):
-                img_icon = Image.open(icon_png)
-                photo_icon = ImageTk.PhotoImage(img_icon)
-                ventana.iconphoto(False, photo_icon)
-                ventana._icon_ref = photo_icon
-    except Exception as e:
-        print(f"Error cargando icono en main: {e}")
     # ---- ESTILOS GLOBALES ----
     style = ttk.Style()
     style.theme_use('clam')
@@ -134,7 +119,7 @@ def iniciar_app(username, rol):
         create_section(dashboard, "Administración y Finanzas", 4)
         
         add_card_btn(dashboard, "FIADORES Y CRÉDITOS", "📒", fiados.abrir_ventana_fiados, 5, 0)
-        add_card_btn(dashboard, "REPORTE VENTAS", "📥", reportes.exportar_ventas_dia, 5, 1)
+        add_card_btn(dashboard, "REPORTE VENTAS", "📥", lambda: reportes.exportar_ventas_dia(ventana), 5, 1)
         add_card_btn(dashboard, "CIERRE DE CAJA", "💰", lambda: cierre_caja.abrir_ventana_cierre(username, reiniciar_login), 5, 2)
         add_card_btn(dashboard, "CONFIGURACIÓN / USER", "⚙️", configuracion.abrir_ventana, 5, 3)
 
