@@ -82,7 +82,9 @@ class InventarioWindow:
         lbl = tk.Label(parent, text=text, bg=color, padx=10, pady=2, font=("Segoe UI", 9))
         lbl.pack(side=tk.LEFT, padx=5)
 
-    def conectar(self): return sqlite3.connect("ferreteria.db")
+    def conectar(self): 
+        import database
+        return database.conectar()
 
     def cargar_datos(self, solo_bajo=False):
         for item in self.tree.get_children(): self.tree.delete(item)

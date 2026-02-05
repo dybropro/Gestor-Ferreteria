@@ -21,7 +21,8 @@ def abrir_ventana_productos(filtro_inicial=None):
 
     # ---- CONEXIÓN BD ----
     def conectar():
-        return sqlite3.connect("ferreteria.db")
+        import database
+        return database.conectar()
 
     # ---- FUNCIONES ----
     def limpiar_campos():

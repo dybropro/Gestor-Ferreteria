@@ -5,9 +5,10 @@ from tkinter import messagebox
 import os
 
 def exportar_ventas_dia(parent_win=None):
+    import database
     fecha_hoy = datetime.now().strftime("%Y-%m-%d") # Formato en BD suele ser YYYY-MM-DD
 
-    conn = sqlite3.connect("ferreteria.db")
+    conn = database.conectar()
     cursor = conn.cursor()
 
     # Query para ventas del día

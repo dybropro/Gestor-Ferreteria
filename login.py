@@ -119,8 +119,9 @@ class LoginWindow:
             # --- VALIDACIÓN DE RESTRICCIÓN HORARIA (Vendedores) ---
             if role == "vendedor":
                  # Verificar ultimo cierre
-                 # conn está cerrado, usar nueva conexión para esta verificación
-                 conn2 = sqlite3.connect("ferreteria.db")
+                 # Usar database.conectar para consistencia
+                 import database
+                 conn2 = database.conectar()
                  c2 = conn2.cursor()
                  c2.execute("SELECT MAX(fecha_cierre) FROM cierres_caja WHERE usuario=?", (username,))
                  res = c2.fetchone()

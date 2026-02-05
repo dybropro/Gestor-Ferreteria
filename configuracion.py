@@ -25,7 +25,8 @@ class ConfigWindow:
         self.setup_seguridad()
 
     def conectar(self):
-        return sqlite3.connect("ferreteria.db")
+        import database
+        return database.conectar()
 
     def setup_empresa(self):
         ttk.Label(self.frame_empresa, text="Información para Facturas", style="Subheader.TLabel").pack(pady=(0,20))

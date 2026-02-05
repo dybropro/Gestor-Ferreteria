@@ -68,7 +68,8 @@ class CierreCajaWindow:
         self.actualizar_resumen()
 
     def conectar(self):
-        return sqlite3.connect("ferreteria.db")
+        import database
+        return database.conectar()
     
     def get_last_cierre(self):
         conn = self.conectar()

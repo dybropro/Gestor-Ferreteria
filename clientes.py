@@ -132,7 +132,9 @@ class ClientesWindow:
     # ==========================
     # LOGICA
     # ==========================
-    def conectar(self): return sqlite3.connect("ferreteria.db")
+    def conectar(self):
+        import database
+        return database.conectar()
     
     def limpiar(self):
         self.selected_id = None

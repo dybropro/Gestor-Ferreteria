@@ -18,7 +18,8 @@ def abrir_ventana_ventas(rol_usuario="vendedor"):
     # Cargar Configuración de Impuestos
     impuesto_pct = 0
     try:
-        conn = sqlite3.connect("ferreteria.db")
+        import database
+        conn = database.conectar()
         cur = conn.cursor()
         cur.execute("SELECT valor FROM configuracion WHERE clave='impuesto_porcentaje'")
         res = cur.fetchone()
@@ -36,7 +37,8 @@ def abrir_ventana_ventas(rol_usuario="vendedor"):
         busqueda = entry_busqueda.get()
         if busqueda == "": return
 
-        conexion = sqlite3.connect("ferreteria.db")
+        import database
+        conexion = database.conectar()
         cursor = conexion.cursor()
 
         # 1. Buscar por código exacto

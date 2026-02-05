@@ -31,14 +31,15 @@ Name: "spanish"; MessagesFile: "compiler:Languages\Spanish.isl"
 ; Archivos del programa (generados con PyInstaller en la carpeta dist)
 Source: "dist\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 
-; --- PROTECCIÓN DE DATOS ---
-; La bandera 'onlyifdoesntexist' evita que el instalador sobrescriba tu base de datos si ya existe.
-; La bandera 'uninsneveruninstall' asegura que la DB no se borre al desinstalar (opcional).
-Source: "ferreteria.db"; DestDir: "{app}"; Flags: onlyifdoesntexist uninsneveruninstall
+; --- SEPARACIÓN DE DATOS ---
+; Instalamos la base de datos inicial en la carpeta de datos del usuario (AppData)
+; Esto evita que se borre si el usuario borra la carpeta de Archivos de Programa por error.
+Source: "ferreteria.db"; DestDir: "{userappdata}\{#MyAppPublisher}\{#MyAppName}"; Flags: onlyifdoesntexist uninsneveruninstall
 
 [Icons]
-Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
-Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
+; El icono se extrae del propio ejecutable o se puede especificar
+Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\{#MyAppExeName}"
+Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\{#MyAppExeName}"
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent

@@ -19,7 +19,8 @@ def generar_factura(carrito, total, venta_id, fecha, cliente_data="Público Gene
     y = height - 10 * mm
     x_margin = 5 * mm
 
-    conn = sqlite3.connect("ferreteria.db")
+    import database
+    conn = database.conectar()
     cursor = conn.cursor()
     
     # Obtener configuración

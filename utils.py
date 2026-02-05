@@ -1,6 +1,26 @@
 import sys
 import os
 
+def get_db_path():
+    """ 
+    Determina la ruta de la base de datos. 
+    En producción (EXE), se guarda en %APPDATA%/DybroCorp/FerreteriaDybro.
+    En desarrollo, se usa la carpeta local.
+    """
+    db_filename = "ferreteria.db"
+    
+    # Si estamos en modo EXE (PyInstaller)
+    if getattr(sys, 'frozen', False):
+        appdata = os.environ.get('APPDATA')
+        if appdata:
+            base_dir = os.path.join(appdata, "DybroCorp", "FerreteriaDybro")
+            if not os.path.exists(base_dir):
+                os.makedirs(base_dir)
+            return os.path.join(base_dir, db_filename)
+            
+    # Fallback para desarrollo o si falla APPDATA
+    return db_filename
+
 def resource_path(relative_path):
     """ Obtiene la ruta absoluta al recurso, funciona para dev y para PyInstaller """
     try:

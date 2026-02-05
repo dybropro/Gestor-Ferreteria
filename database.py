@@ -1,7 +1,8 @@
 import sqlite3
+import utils
 
 def conectar():
-    return sqlite3.connect("ferreteria.db")
+    return sqlite3.connect(utils.get_db_path())
 
 def crear_tablas():
     conexion = conectar()

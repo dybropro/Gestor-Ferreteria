@@ -142,6 +142,7 @@ def iniciar_login_flow():
 
 def check_licencia():
     mid = licensing.get_machine_id()
+    import database
     conn = database.conectar()
     cursor = conn.cursor()
     try:

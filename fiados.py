@@ -59,7 +59,8 @@ class FiadosWindow:
         self.cargar_datos()
 
     def conectar(self):
-        return sqlite3.connect("ferreteria.db")
+        import database
+        return database.conectar()
 
     def cargar_datos(self):
         for item in self.tree.get_children():

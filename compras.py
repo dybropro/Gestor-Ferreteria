@@ -81,7 +81,8 @@ class ComprasWindow:
         self.temp_prod = None # (id, nombre, costo_actual)
 
     def conectar(self):
-        return sqlite3.connect("ferreteria.db")
+        import database
+        return database.conectar()
 
     def cargar_proveedores(self):
         self.map_prov = {}
